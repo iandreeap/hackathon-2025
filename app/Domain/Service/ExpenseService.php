@@ -16,11 +16,32 @@ class ExpenseService
         private readonly ExpenseRepositoryInterface $expenses,
     ) {}
 
-    public function list(User $user, int $year, int $month, int $pageNumber, int $pageSize): array
+    public function listByUserAndMonth(int $userId, int $year, int $month, int $page, int $limit): array
     {
-        // TODO: implement this and call from controller to obtain paginated list of expenses
-        return [];
+        $offset = ($page - 1) * $limit;
+        return $this->expenses->getByUserAndMonth($userId, $year, $month, $offset, $limit);
     }
+
+    public function countByUserAndMonth(int $userId, int $year, int $month): int
+    {
+        return $this->expenses->countByUserAndMonth($userId, $year, $month);
+    }
+
+    public function getAvailableCategories(): array
+    {
+        return ['Mancare', 'Utilitati', 'Transport', 'Haine', 'Sanatate'];
+    }
+
+    public function findExpense(int $id): ?Expense
+    {
+        return $this->expenses->find($id);
+    }
+
+    public function delete(int $expenseId): void
+    {
+        $this->expenses->delete($expenseId);
+    }
+
 
     public function create(
         User $user,

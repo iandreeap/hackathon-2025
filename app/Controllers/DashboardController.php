@@ -12,6 +12,9 @@ class DashboardController extends BaseController
 {
     public function __construct(
         Twig $view,
+        private readonly ExpenseService $expenseService,
+        private readonly MonthlySummaryService $summaryService,
+        private readonly AlertGenerator $alertGenerator
         // TODO: add necessary services here and have them injected by the DI container
     )
     {
@@ -27,13 +30,35 @@ class DashboardController extends BaseController
         // TODO: call service to compute total expenditure per selected year/month
         // TODO: call service to compute category totals per selected year/month
         // TODO: call service to compute category averages per selected year/month
+        if (!isset($_SESSION['user']['id'])) {
+            return $response->withHeader('Location', '/login')->withStatus(302);
+        }
+
+        $query = $request->getQueryParams();
+        $currentDate = new \DateTimeImmutable();
+        $year = (int)($query['year'] ?? $currentDate->format('Y'));
+        $month = (int)($query['month'] ?? $currentDate->format('m'));
+
+        $userId = (int)$_SESSION['user']['id'];
+
+        $total = $this->summaryService->computeTotalExpenditure($userId, $year, $month);
+        $totalsForCategory = $this->summaryService->computePerCategoryTotals($userId, $year, $month);
+        $averagesForCategory = $this->summaryService->computePerCategoryAverages($userId, $year, $month);
+
+        $alerts= [];
+        if ((int)$currentDate->format('Y') === $year && (int)$currentDate->format('m') === $month)
+        {
+            $alerts = $this->alertGenerator->generate($totalsForCategory);
+        }
 
         return $this->render($response, 'dashboard.twig', [
-
-            'alerts'                => [],
+            'year' => $year,
+            'month' => $month,
+            'total' => $total,
+            'alerts'                => $alerts,
             'totalForMonth'         => [],
-            'totalsForCategories'   => [],
-            'averagesForCategories' => [],
+            'totalsForCategory'   => $totalsForCategory,
+            'averagesForCategory' => $averagesForCategory
         ]);
     }
 }

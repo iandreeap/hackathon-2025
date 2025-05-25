@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\ComposerSetup",
+    "\\ComposerSetup\\bin",
+    "\\config",
+    "\\database",
+    "\\import",
+    "\\templates",
+    "\\templates\\auth",
+    "\\templates\\expenses",
+    "\\tests",
+    "\\tests\\Unit"
+  ],
+  "SelectedNode": "\\app\\Domain\\Repository\\UserRepositoryInterface.php",
+  "PreviewInSolutionExplorer": false
+}

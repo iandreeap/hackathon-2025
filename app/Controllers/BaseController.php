@@ -15,6 +15,14 @@ abstract class BaseController
 
     protected function render(Response $response, string $template, array $data = []): Response
     {
+        if(session_status() === PHP_SESSION_NONE)
+        {
+            session_start();
+        }
+
+        $data['currentUserId'] = $_SESSION['user']['id'] ?? null;
+        $data['currentUserName'] = $_SESSION ['user']['username'] ?? null;
+
         return $this->view->render($response, $template, $data);
     }
 

@@ -29,4 +29,10 @@ interface ExpenseRepositoryInterface
     public function averageAmountsByCategory(array $criteria): array;
 
     public function sumAmounts(array $criteria): float;
+
+
+    public function getByUserAndMonth(int $userId, int $year, int $month, int $offset, int $limit): array;
+
+    public function countByUserAndMonth(int $userId, int $year, int $month): int;
+
 }
